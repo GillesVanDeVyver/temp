@@ -2,6 +2,9 @@
 
 #include <ostream>
 
+#include <iostream>
+using namespace std;
+
 Move::Move(const Square& from, const Square& to,
            const std::optional<PieceType>& promotion)
 {
@@ -22,23 +25,20 @@ Move::Optional Move::fromUci(const std::string& uci) {
             } else{
                 return std::nullopt;
             }
-            (void) extracted_Piece_as_optional;
-            extracted_promotion=std::nullopt;
         }
         else{
             extracted_promotion=std::nullopt;
         }
         
-        std::string from_as_string = uci.substr(0,1);
+        std::string from_as_string = uci.substr(0,2);
         std::optional extracted_from_as_optional=Square::fromName(from_as_string);
-    
-        std::string to_as_string = uci.substr(2,3);
+                
+        std::string to_as_string = uci.substr(2,2);
         std::optional extracted_to_as_optional = Square::fromName(to_as_string);
         
         if (extracted_from_as_optional.has_value()&&extracted_to_as_optional.has_value()){
             Square extracted_from=*extracted_from_as_optional;
             Square extracted_to=*extracted_to_as_optional;
-            
             return Move(extracted_from, extracted_to,extracted_promotion);
         }
     }
@@ -64,6 +64,7 @@ std::optional<PieceType> Move::promotion() const {
 
 std::ostream& operator<<(std::ostream& os, const Move& move) {
     std::optional<PieceType> promotion_as_optional = move.promotion();
+        
     if (promotion_as_optional.has_value()){
         Piece temp_piece(PieceColor::Black,*promotion_as_optional); // make use of Piece streaming function
         os<<move.from()<<move.to()<<temp_piece;
