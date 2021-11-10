@@ -1,0 +1,4 @@
+[Project]
+CreatedFrom=CMakeLists.txt
+Manager=KDevCMakeManager
+Name=chess_engine_personal_repo
