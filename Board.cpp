@@ -188,10 +188,16 @@ void Board::pseudoLegalMovesFrom(const Square& from,
         if ((WhiteKnights >> from.index()) & 1){
             pseudoLegalMovesKnight(from,moves,WhitePieces);
         }
+        if ((WhiteKing >> from.index()) & 1){
+            pseudoLegalMovesKing(from,moves,WhitePieces);
+        }
     }
     if (turn()==PieceColor::Black && (BlackPieces >> from.index()) & 1){
         if ((BlackKnights >> from.index()) & 1) {
             pseudoLegalMovesKnight(from,moves,BlackPieces);
+        }
+        if ((BlackKing >> from.index()) & 1){
+            pseudoLegalMovesKing(from,moves,BlackPieces);
         }
     }
 }
@@ -220,27 +226,83 @@ void Board::pseudoLegalMovesKnight(const Square& from, MoveVec& moves, long ownp
     if (squareTo) {
         if (!((ownpieces >> squareTo.value().index()) & 1)){
             moves.push_back(*new Move(from,squareTo.value()));
-        }    }
+        }    
+    }
     squareTo = Square::fromCoordinates(from.file()-2,from.rank()+1); //up left left
     if (squareTo) {
         if (!((ownpieces >> squareTo.value().index()) & 1)){
             moves.push_back(*new Move(from,squareTo.value()));
-        }    }
+        }    
+    }
     squareTo = Square::fromCoordinates(from.file()+2,from.rank()+1); //up right right
     if (squareTo) {
         if (!((ownpieces >> squareTo.value().index()) & 1)){
             moves.push_back(*new Move(from,squareTo.value()));
-        }    }
+        }    
+    }
     squareTo = Square::fromCoordinates(from.file()+1,from.rank()+2); //up up right
     if (squareTo) {
         if (!((ownpieces >> squareTo.value().index()) & 1)){
             moves.push_back(*new Move(from,squareTo.value()));
-        }    }
+        }    
+    }
     squareTo = Square::fromCoordinates(from.file()-1,from.rank()+2); //up up left
     if (squareTo) {
         if (!((ownpieces >> squareTo.value().index()) & 1)){
             moves.push_back(*new Move(from,squareTo.value()));
-        }    }
+        }    
+    }
+}
+
+void Board::pseudoLegalMovesKing(const Square& from, MoveVec& moves, long ownpieces) const{
+    Square::Optional squareTo = Square::fromCoordinates(from.file()-1,from.rank()+1); //up left
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file(),from.rank()+1); //up
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()+1); //up right
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file()-1,from.rank()); //left
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()); //right
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file()-1,from.rank()-1); // down left
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file(),from.rank()-1); // down
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()-1); // down right
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
 }
 
 
