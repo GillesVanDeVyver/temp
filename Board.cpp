@@ -191,6 +191,9 @@ void Board::pseudoLegalMovesFrom(const Square& from,
         if ((WhiteKing >> from.index()) & 1){
             pseudoLegalMovesKing(from,moves,WhitePieces);
         }
+        if ((WhiteBishops >> from.index()) & 1){
+            pseudoLegalMovesBishop(from,moves,WhitePieces,BlackPieces);
+        }
     }
     if (turn()==PieceColor::Black && (BlackPieces >> from.index()) & 1){
         if ((BlackKnights >> from.index()) & 1) {
@@ -198,6 +201,9 @@ void Board::pseudoLegalMovesFrom(const Square& from,
         }
         if ((BlackKing >> from.index()) & 1){
             pseudoLegalMovesKing(from,moves,BlackPieces);
+        }
+        if ((BlackBishops >> from.index()) & 1){
+            pseudoLegalMovesBishop(from,moves,BlackPieces,WhitePieces);
         }
     }
 }
@@ -304,6 +310,81 @@ void Board::pseudoLegalMovesKing(const Square& from, MoveVec& moves, long ownpie
         }
     }
 }
+
+void Board::pseudoLegalMovesBishop(const Square& from, MoveVec& moves, long int ownpieces, long int otherpieces) const
+{
+    (void) otherpieces;
+    Square::Optional squareTo;
+    bool noCapture = true;
+    int i = 1;
+    while (noCapture && i <8) {
+        squareTo = Square::fromCoordinates(from.file()+i,from.rank()+i); // up right
+        if (squareTo) {
+            if (!((ownpieces >> squareTo.value().index()) & 1)){
+                moves.push_back(*new Move(from,squareTo.value()));
+                if ((otherpieces >> squareTo.value().index()) & 1){
+                    noCapture=false;
+                }
+            }
+            else{
+                noCapture=false;
+            }
+        }
+    i++;
+    }
+    i = 1;
+    noCapture = true;
+    while (noCapture && i <8) {
+        squareTo = Square::fromCoordinates(from.file()-i,from.rank()+i); // up left
+        if (squareTo) {
+            if (!((ownpieces >> squareTo.value().index()) & 1)){
+                moves.push_back(*new Move(from,squareTo.value()));
+                if ((otherpieces >> squareTo.value().index()) & 1){
+                    noCapture=false;
+                }
+            }
+            else{
+                noCapture=false;
+            }
+        }
+    i++;
+    }
+    i = 1;
+    noCapture = true;
+    while (noCapture && i <8) {
+        squareTo = Square::fromCoordinates(from.file()+i,from.rank()-i); // down right
+        if (squareTo) {
+            if (!((ownpieces >> squareTo.value().index()) & 1)){
+                moves.push_back(*new Move(from,squareTo.value()));
+                if ((otherpieces >> squareTo.value().index()) & 1){
+                    noCapture=false;
+                }
+            }
+            else{
+                noCapture=false;
+            }
+        }
+    i++;
+    }
+    i = 1;
+    noCapture = true;
+    while (noCapture && i <8) {
+        squareTo = Square::fromCoordinates(from.file()-i,from.rank()-i); // down left
+        if (squareTo) {
+            if (!((ownpieces >> squareTo.value().index()) & 1)){
+                moves.push_back(*new Move(from,squareTo.value()));
+                if ((otherpieces >> squareTo.value().index()) & 1){
+                    noCapture=false;
+                }
+            }
+            else{
+                noCapture=false;
+            }
+        }
+    i++;
+    }
+}
+
 
 
 

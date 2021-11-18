@@ -33,8 +33,9 @@ public:
     void pseudoLegalMovesFrom(const Square& from, MoveVec& moves) const;
     
     void pseudoLegalMovesKnight(const Square& from, MoveVec& moves, long ownpieces) const;
-    
     void pseudoLegalMovesKing(const Square& from, MoveVec& moves, long ownpieces) const;
+    void pseudoLegalMovesBishop(const Square& from, MoveVec& moves, long ownpieces, long otherpieces) const;
+
 
 
 private:
