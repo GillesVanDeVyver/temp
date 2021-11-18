@@ -157,19 +157,19 @@ PieceColor Board::turn() const {
 }
 
 void Board::setCastlingRights(CastlingRights cr) {
-    (void)cr;
+    cstlingRights = cr;
 }
 
 CastlingRights Board::castlingRights() const {
-    return CastlingRights::None;
+    return cstlingRights;
 }
 
 void Board::setEnPassantSquare(const Square::Optional& square) {
-    (void)square;
+    enpassantsqr = square.value().index();
 }
 
 Square::Optional Board::enPassantSquare() const {
-    return std::nullopt;
+    return enpassantsqr;
 }
 
 void Board::makeMove(const Move& move) {
@@ -177,14 +177,73 @@ void Board::makeMove(const Move& move) {
 }
 
 void Board::pseudoLegalMoves(MoveVec& moves) const {
-    (void)moves;
+    for (int index =0; index<64; index++){
+        this->pseudoLegalMovesFrom(Square::fromIndex(index).value(),moves);
+    }
 }
 
 void Board::pseudoLegalMovesFrom(const Square& from,
                                  Board::MoveVec& moves) const {
-    (void)from;
-    (void)moves;
+    if (turn()==PieceColor::White && (WhitePieces >> from.index()) & 1){
+        if ((WhiteKnights >> from.index()) & 1){
+            pseudoLegalMovesKnight(from,moves,WhitePieces);
+        }
+    }
+    if (turn()==PieceColor::Black && (BlackPieces >> from.index()) & 1){
+        if ((BlackKnights >> from.index()) & 1) {
+            pseudoLegalMovesKnight(from,moves,BlackPieces);
+        }
+    }
 }
+
+
+void Board::pseudoLegalMovesKnight(const Square& from, MoveVec& moves, long ownpieces) const{
+    Square::Optional squareTo = Square::fromCoordinates(from.file()-1,from.rank()-2); //down down left
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()-2); //down down right
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file()-2,from.rank()-1); //down left left
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    squareTo = Square::fromCoordinates(from.file()+2,from.rank()-1); //down right right
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }    }
+    squareTo = Square::fromCoordinates(from.file()-2,from.rank()+1); //up left left
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }    }
+    squareTo = Square::fromCoordinates(from.file()+2,from.rank()+1); //up right right
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }    }
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()+2); //up up right
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }    }
+    squareTo = Square::fromCoordinates(from.file()-1,from.rank()+2); //up up left
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1)){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }    }
+}
+
+
 
 std::ostream& operator<<(std::ostream& os, const Board& board) {
     for (int i =0; i<64; i++){

@@ -31,6 +31,8 @@ public:
 
     void pseudoLegalMoves(MoveVec& moves) const;
     void pseudoLegalMovesFrom(const Square& from, MoveVec& moves) const;
+    
+    void pseudoLegalMovesKnight(const Square& from, MoveVec& moves, long ownpieces) const;
 
 private:
     PieceColor turn_attr;
@@ -49,6 +51,10 @@ private:
     long BlackKnights;
     long BlackPawns;
     long BlackPieces;
+    
+    CastlingRights cstlingRights;
+    
+    int enpassantsqr;
     
 };
 

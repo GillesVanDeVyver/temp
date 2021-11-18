@@ -126,7 +126,6 @@ const Square Square::G8 = Square(56 + 6);
 const Square Square::H8 = Square(56 + 7);
 
 std::ostream& operator<<(std::ostream& os, const Square& square) {
-    (void)square;
     os << char(square.file()+97)<<char(square.rank()+49);
     return os;
 }
