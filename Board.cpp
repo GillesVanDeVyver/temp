@@ -7,6 +7,7 @@
 Board::Board()
 {
 }
+// new branche
 
 void Board::setPiece(const Square& square, const Piece::Optional& piece) {
     (void)square;
