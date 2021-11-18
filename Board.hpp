@@ -31,6 +31,25 @@ public:
 
     void pseudoLegalMoves(MoveVec& moves) const;
     void pseudoLegalMovesFrom(const Square& from, MoveVec& moves) const;
+
+private:
+    PieceColor turn_attr;
+    long WhiteKing;
+    long WhiteQueens;
+    long WhiteRooks;
+    long WhiteBishops;
+    long WhiteKnights;
+    long WhitePawns;
+    long WhitePieces;
+    
+    long BlackKing;
+    long BlackQueens;
+    long BlackRooks;
+    long BlackBishops;
+    long BlackKnights;
+    long BlackPawns;
+    long BlackPieces;
+    
 };
 
 std::ostream& operator<<(std::ostream& os, const Board& board);
