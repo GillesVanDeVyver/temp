@@ -26,7 +26,6 @@ Board::Board()
 }
 
 void Board::setPiece(const Square& square, const Piece::Optional& piece) { // todo overwrite occupied
-    
     int index_to_set=square.index();
     
     // remove old piece
@@ -188,6 +187,19 @@ void Board::pseudoLegalMovesFrom(const Square& from,
 }
 
 std::ostream& operator<<(std::ostream& os, const Board& board) {
-    (void)board;
+    for (int i =0; i<64; i++){
+        const Square& squareAtIndex = Square::fromIndex(i).value();
+        Piece::Optional pieceAtIndex = board.piece(squareAtIndex);
+        if (pieceAtIndex){
+            os<<pieceAtIndex.value();
+        }
+        else{
+            os<<".";
+        }
+        if ((i+1)%8==0){
+           os<<"\n"; 
+        }
+    }
+    os<<"\n";
     return os;
 }
