@@ -41,6 +41,8 @@ public:
                                  Board::MoveVec& moves, PieceColor color) const;
     bool checkCaptureAndSet(const Square& from, Square::Optional squareTo,
                                  Board::MoveVec& moves, PieceColor color) const;
+    void pseudoLegalRookMoves(const Square& from,
+                                 Board::MoveVec& moves, PieceColor color) const;
     
 private:
     Piece::Optional boardArr[8][8];

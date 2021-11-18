@@ -63,6 +63,13 @@ void Board::pseudoLegalMovesFrom(const Square& from,
             if (pieceFrom.type()==PieceType::Bishop){
                 pseudoLegalBishopMoves(from,moves,pieceFrom.color());
             }
+            if (pieceFrom.type()==PieceType::Rook){
+                pseudoLegalRookMoves(from,moves,pieceFrom.color());
+            }
+            if (pieceFrom.type()==PieceType::Queen){
+                pseudoLegalRookMoves(from,moves,pieceFrom.color());
+                pseudoLegalBishopMoves(from,moves,pieceFrom.color());
+            }
         }
     }
 
@@ -136,6 +143,39 @@ void Board::pseudoLegalBishopMoves(const Square& from,
     noCapture=true;
     while(i<8 && noCapture){
         squareTo = Square::fromCoordinates(from.file()+i,from.rank()+i); //up right
+        noCapture = checkCaptureAndSet(from,squareTo,moves,color);
+        i++;
+    }
+}
+
+void Board::pseudoLegalRookMoves(const Square& from,
+                                 Board::MoveVec& moves, PieceColor color) const {
+    Square::Optional squareTo;
+    int i = 1;
+    bool noCapture=true;
+    while(i<8 && noCapture){
+        squareTo = Square::fromCoordinates(from.file(),from.rank()-i); //down
+        noCapture = checkCaptureAndSet(from,squareTo,moves,color);
+        i++;
+    }
+    i=1;
+    noCapture=true;
+    while(i<8 && noCapture){
+        squareTo = Square::fromCoordinates(from.file(),from.rank()+i); //up
+        noCapture = checkCaptureAndSet(from,squareTo,moves,color);
+        i++;
+    }
+    i=1;
+    noCapture=true;
+    while(i<8 && noCapture){
+        squareTo = Square::fromCoordinates(from.file()-i,from.rank()); //left
+        noCapture = checkCaptureAndSet(from,squareTo,moves,color);
+        i++;
+    }
+    i=1;
+    noCapture=true;
+    while(i<8 && noCapture){
+        squareTo = Square::fromCoordinates(from.file()+i,from.rank()); //right
         noCapture = checkCaptureAndSet(from,squareTo,moves,color);
         i++;
     }
