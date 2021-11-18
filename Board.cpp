@@ -197,6 +197,10 @@ void Board::pseudoLegalMovesFrom(const Square& from,
         if ((WhiteRooks >> from.index()) & 1){
             pseudoLegalMovesRook(from,moves,WhitePieces,BlackPieces);
         }
+        if ((WhiteQueens >> from.index()) & 1){
+            pseudoLegalMovesRook(from,moves,WhitePieces,BlackPieces);
+            pseudoLegalMovesBishop(from,moves,WhitePieces,BlackPieces);
+        }
     }
     if (turn()==PieceColor::Black && (BlackPieces >> from.index()) & 1){
         if ((BlackKnights >> from.index()) & 1) {
@@ -210,6 +214,10 @@ void Board::pseudoLegalMovesFrom(const Square& from,
         }
         if ((BlackRooks >> from.index()) & 1){
             pseudoLegalMovesRook(from,moves,BlackPieces,WhitePieces);
+        }
+        if ((BlackQueens >> from.index()) & 1){
+            pseudoLegalMovesRook(from,moves,BlackPieces,WhitePieces);
+            pseudoLegalMovesBishop(from,moves,BlackPieces,WhitePieces);
         }
     }
 }
