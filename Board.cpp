@@ -3,6 +3,8 @@
 #include <ostream>
 #include <cassert>
 #include <cmath>
+#include <iostream>
+using namespace std;
 
 Board::Board()
 {
@@ -69,6 +71,9 @@ void Board::pseudoLegalMovesFrom(const Square& from,
             if (pieceFrom.type()==PieceType::Queen){
                 pseudoLegalRookMoves(from,moves,pieceFrom.color());
                 pseudoLegalBishopMoves(from,moves,pieceFrom.color());
+            }
+            if (pieceFrom.type()==PieceType::Pawn){
+                pseudoLegalPawnMoves(from,moves,pieceFrom.color());
             }
         }
     }
@@ -181,7 +186,72 @@ void Board::pseudoLegalRookMoves(const Square& from,
     }
 }
 
-void Board::checkSameColorCaptureAndSet(const Square& from, Square::Optional squareTo,
+void Board::pseudoLegalPawnMoves(const Square& from,
+                                 Board::MoveVec& moves, PieceColor color) const {
+    
+    Square::Optional squareTo;
+    if (color==PieceColor::White){
+        //normal step
+        squareTo = Square::fromCoordinates(from.file(),from.rank()+1); //up
+        checkBlockedAndSet(from,squareTo,moves);
+        //captures
+        squareTo = Square::fromCoordinates(from.file()-1,from.rank()+1); //up left
+        checkOtherColorCaptureAndSet(from,squareTo,moves, color);
+        squareTo = Square::fromCoordinates(from.file()+1,from.rank()+1); //up right
+        checkOtherColorCaptureAndSet(from,squareTo,moves, color);
+        if (from.rank()==1){
+            //base step
+            squareTo = Square::fromCoordinates(from.file(),from.rank()+2); //up up
+            Square squareToIntermediate=Square::fromCoordinates(from.file(),from.rank()+1).value(); //up
+            checkFreeBaseAndSet(from,squareToIntermediate,squareTo.value(),moves);
+        }
+    } else{
+        // normal step
+        squareTo = Square::fromCoordinates(from.file(),from.rank()-1); //down
+        checkBlockedAndSet(from,squareTo,moves);
+        // captures
+        squareTo = Square::fromCoordinates(from.file()-1,from.rank()-1); //down left
+        checkOtherColorCaptureAndSet(from,squareTo,moves, color);
+        squareTo = Square::fromCoordinates(from.file()+1,from.rank()-1); //down right
+        checkOtherColorCaptureAndSet(from,squareTo,moves, color);
+        if (from.rank()==6){
+            //base step
+            squareTo = Square::fromCoordinates(from.file(),from.rank()-2); //down down
+            Square squareToIntermediate=Square::fromCoordinates(from.file(),from.rank()-1).value(); //down
+            checkFreeBaseAndSet(from,squareToIntermediate,squareTo.value(),moves);
+        }
+    }
+}
+
+void Board::checkOtherColorCaptureAndSet(const Square& from, Square::Optional squareTo, // used in pawn captures
+                                 Board::MoveVec& moves, PieceColor color) const {
+    if (squareTo){
+        if (piece(squareTo.value())){
+            if (piece(squareTo.value()).value().color() != color){ //opposite color
+                moves.push_back(* new Move(from,squareTo.value()));
+            }
+        }
+    }
+}
+
+void Board::checkFreeBaseAndSet(const Square& from, const Square& squareToIntermediate, // used in pawn base moves
+                                 const Square& squareTo,Board::MoveVec& moves) const {
+                                     
+    if (!(piece(squareToIntermediate)) && !(piece(squareTo))){
+        moves.push_back(* new Move(from,squareTo));
+    }
+}
+
+void Board::checkBlockedAndSet(const Square& from, Square::Optional squareTo, // used in pawn moves
+                                 Board::MoveVec& moves) const {
+    if (squareTo){
+        if (!(piece(squareTo.value()))){
+            moves.push_back(* new Move(from,squareTo.value()));
+        }
+    }
+}
+
+void Board::checkSameColorCaptureAndSet(const Square& from, Square::Optional squareTo, // used for king/knight
                                  Board::MoveVec& moves, PieceColor color) const {
     if (squareTo){
         if (piece(squareTo.value())){
@@ -193,7 +263,7 @@ void Board::checkSameColorCaptureAndSet(const Square& from, Square::Optional squ
     }
 }
 
-bool Board::checkCaptureAndSet(const Square& from, Square::Optional squareTo,
+bool Board::checkCaptureAndSet(const Square& from, Square::Optional squareTo, // used for rook/bishop/queen
                                  Board::MoveVec& moves, PieceColor color) const {
     if (squareTo){
         if (piece(squareTo.value())){

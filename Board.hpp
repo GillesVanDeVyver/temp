@@ -43,6 +43,14 @@ public:
                                  Board::MoveVec& moves, PieceColor color) const;
     void pseudoLegalRookMoves(const Square& from,
                                  Board::MoveVec& moves, PieceColor color) const;
+    void pseudoLegalPawnMoves(const Square& from,
+                                 Board::MoveVec& moves, PieceColor color) const;
+    void checkBlockedAndSet(const Square& from, Square::Optional squareTo,
+                                 Board::MoveVec& moves) const;
+    void checkOtherColorCaptureAndSet(const Square& from, Square::Optional squareTo,
+                                 Board::MoveVec& moves, PieceColor color) const;
+    void checkFreeBaseAndSet(const Square& from, const Square& squareToIntermediate,
+                                 const Square& squareTo,Board::MoveVec& moves) const;
     
 private:
     Piece::Optional boardArr[8][8];
