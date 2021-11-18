@@ -36,27 +36,28 @@ public:
     void pseudoLegalMovesKing(const Square& from, MoveVec& moves, long ownpieces) const;
     void pseudoLegalMovesBishop(const Square& from, MoveVec& moves, long ownpieces, long otherpieces) const;
     void pseudoLegalMovesRook(const Square& from, MoveVec& moves, long ownpieces, long otherpieces) const;
+    void pseudoLegalMovesPawn(const Square& from, MoveVec& moves, long ownpieces, long otherpieces, PieceColor color) const;
 
 
 
 
 private:
     PieceColor turn_attr;
-    long WhiteKing;
-    long WhiteQueens;
-    long WhiteRooks;
-    long WhiteBishops;
-    long WhiteKnights;
-    long WhitePawns;
-    long WhitePieces;
+    unsigned long long WhiteKing;
+    unsigned long long WhiteQueens;
+    unsigned long long WhiteRooks;
+    unsigned long long WhiteBishops;
+    unsigned long long WhiteKnights;
+    unsigned long long WhitePawns;
+    unsigned long long WhitePieces;
     
-    long BlackKing;
-    long BlackQueens;
-    long BlackRooks;
-    long BlackBishops;
-    long BlackKnights;
-    long BlackPawns;
-    long BlackPieces;
+    unsigned long long BlackKing;
+    unsigned long long BlackQueens;
+    unsigned long long BlackRooks;
+    unsigned long long BlackBishops;
+    unsigned long long BlackKnights;
+    unsigned long long BlackPawns;
+    unsigned long long BlackPieces;
     
     CastlingRights cstlingRights;
     

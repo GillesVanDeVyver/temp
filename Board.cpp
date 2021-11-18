@@ -201,6 +201,9 @@ void Board::pseudoLegalMovesFrom(const Square& from,
             pseudoLegalMovesRook(from,moves,WhitePieces,BlackPieces);
             pseudoLegalMovesBishop(from,moves,WhitePieces,BlackPieces);
         }
+        if ((WhitePawns >> from.index()) & 1){
+            pseudoLegalMovesPawn(from,moves,WhitePieces,BlackPieces,PieceColor::White);
+        }
     }
     if (turn()==PieceColor::Black && (BlackPieces >> from.index()) & 1){
         if ((BlackKnights >> from.index()) & 1) {
@@ -218,6 +221,9 @@ void Board::pseudoLegalMovesFrom(const Square& from,
         if ((BlackQueens >> from.index()) & 1){
             pseudoLegalMovesRook(from,moves,BlackPieces,WhitePieces);
             pseudoLegalMovesBishop(from,moves,BlackPieces,WhitePieces);
+        }
+        if ((BlackPawns >> from.index()) & 1){
+            pseudoLegalMovesPawn(from,moves,BlackPieces,WhitePieces,PieceColor::Black);
         }
     }
 }
@@ -470,6 +476,50 @@ void Board::pseudoLegalMovesRook(const Square& from, MoveVec& moves, long int ow
     i++;
     }
 }
+
+void Board::pseudoLegalMovesPawn(const Square& from, MoveVec& moves, long int ownpieces, long int otherpieces, PieceColor color) const{
+    Square::Optional squareTo;
+    std::cout<<*this;
+    if (color == PieceColor::White){
+        squareTo = Square::fromCoordinates(from.file(),from.rank()+1); // up
+    } else {
+        squareTo = Square::fromCoordinates(from.file(),from.rank()-1); // down
+    }
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1) && !(otherpieces >> squareTo.value().index())){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    
+    if (color == PieceColor::White){
+        squareTo = Square::fromCoordinates(from.file()+1,from.rank()+1); // up right
+    } else {
+        squareTo = Square::fromCoordinates(from.file()+1,from.rank()-1); // down right
+    }
+    if (squareTo) {
+        if (!((ownpieces >> squareTo.value().index()) & 1) && (otherpieces >> squareTo.value().index())){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    
+    if (color == PieceColor::White){
+        squareTo = Square::fromCoordinates(from.file()-1,from.rank()+1); // up left
+    } else {
+        squareTo = Square::fromCoordinates(from.file()-1,from.rank()-1); // down left
+    }
+    if (squareTo) {
+        std::cout<<(otherpieces >> squareTo.value().index())<<"here\n";
+        std::cout<<(!((ownpieces >> squareTo.value().index()) & 1) && (otherpieces >> squareTo.value().index()))<<"herea\n";
+        if (!((ownpieces >> squareTo.value().index()) & 1) && (otherpieces >> squareTo.value().index())){
+            moves.push_back(*new Move(from,squareTo.value()));
+        }
+    }
+    
+    
+    
+    
+}
+
 
 
 std::ostream& operator<<(std::ostream& os, const Board& board) {
