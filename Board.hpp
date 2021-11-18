@@ -31,6 +31,9 @@ public:
 
     void pseudoLegalMoves(MoveVec& moves) const;
     void pseudoLegalMovesFrom(const Square& from, MoveVec& moves) const;
+    
+private:
+    Piece::Optional boardArr[8][8];
 };
 
 std::ostream& operator<<(std::ostream& os, const Board& board);

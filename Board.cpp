@@ -10,13 +10,11 @@ Board::Board()
 // new branche
 
 void Board::setPiece(const Square& square, const Piece::Optional& piece) {
-    (void)square;
-    (void)piece;
+    boardArr[square.file()][square.rank()]=piece;
 }
 
 Piece::Optional Board::piece(const Square& square) const {
-    (void)square;
-    return std::nullopt;
+    return boardArr[square.file()][square.rank()];
 }
 
 void Board::setTurn(PieceColor turn) {
