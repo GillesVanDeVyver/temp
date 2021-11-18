@@ -32,6 +32,10 @@ public:
     void pseudoLegalMoves(MoveVec& moves) const;
     void pseudoLegalMovesFrom(const Square& from, MoveVec& moves) const;
     
+    void pseudoLegalKnightMoves(const Square& from,Board::MoveVec& moves, PieceColor color) const;
+    void checkSameColorCaptureAndSet(const Square& from, Square::Optional squareTo,
+                                 Board::MoveVec& moves, PieceColor color) const;
+    
 private:
     Piece::Optional boardArr[8][8];
     PieceColor turnAttr;

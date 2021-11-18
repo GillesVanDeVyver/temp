@@ -51,8 +51,46 @@ void Board::pseudoLegalMoves(MoveVec& moves) const {
 
 void Board::pseudoLegalMovesFrom(const Square& from,
                                  Board::MoveVec& moves) const {
-    (void)from;
-    (void)moves;
+    if (piece(from)){
+        Piece pieceFrom = piece(from).value();
+        if (turn()==pieceFrom.color()){
+            pseudoLegalKnightMoves(from,moves,pieceFrom.color());
+        }
+    }
+
+}
+
+void Board::pseudoLegalKnightMoves(const Square& from,
+                                 Board::MoveVec& moves, PieceColor color) const {
+    Square::Optional squareTo = Square::fromCoordinates(from.file()-1,from.rank()-2); //down down left
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()-2); //down down right
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()-2,from.rank()-1); //down left left
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()+2,from.rank()-1); //down right right
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()-1,from.rank()+2); //up up left
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()+2); //up up right
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()-2,from.rank()+1); //up left left
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()+2,from.rank()+1); //up right right
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+}
+
+void Board::checkSameColorCaptureAndSet(const Square& from, Square::Optional squareTo,
+                                 Board::MoveVec& moves, PieceColor color) const {
+    if (squareTo){
+        if (piece(squareTo.value())){
+            if (piece(squareTo.value()).value().color() == color){
+                return;
+            }
+        }
+        moves.push_back(* new Move(from,squareTo.value()));
+    }
+
 }
 
 std::ostream& operator<<(std::ostream& os, const Board& board) {
