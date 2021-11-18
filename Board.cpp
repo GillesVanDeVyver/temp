@@ -18,11 +18,11 @@ Piece::Optional Board::piece(const Square& square) const {
 }
 
 void Board::setTurn(PieceColor turn) {
-    (void)turn;
+    turnAttr = turn;
 }
 
 PieceColor Board::turn() const {
-    return PieceColor::White;
+    return turnAttr;
 }
 
 void Board::setCastlingRights(CastlingRights cr) {

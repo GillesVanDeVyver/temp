@@ -34,6 +34,7 @@ public:
     
 private:
     Piece::Optional boardArr[8][8];
+    PieceColor turnAttr;
 };
 
 std::ostream& operator<<(std::ostream& os, const Board& board);
