@@ -54,7 +54,12 @@ void Board::pseudoLegalMovesFrom(const Square& from,
     if (piece(from)){
         Piece pieceFrom = piece(from).value();
         if (turn()==pieceFrom.color()){
-            pseudoLegalKnightMoves(from,moves,pieceFrom.color());
+            if (pieceFrom.type()==PieceType::Knight){
+                pseudoLegalKnightMoves(from,moves,pieceFrom.color());
+            }
+            if (pieceFrom.type()==PieceType::King){
+                pseudoLegalKingMoves(from,moves,pieceFrom.color());
+            }
         }
     }
 
@@ -77,6 +82,26 @@ void Board::pseudoLegalKnightMoves(const Square& from,
     squareTo = Square::fromCoordinates(from.file()-2,from.rank()+1); //up left left
     checkSameColorCaptureAndSet(from,squareTo,moves,color);
     squareTo = Square::fromCoordinates(from.file()+2,from.rank()+1); //up right right
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+}
+
+void Board::pseudoLegalKingMoves(const Square& from,
+                                 Board::MoveVec& moves, PieceColor color) const {
+    Square::Optional squareTo = Square::fromCoordinates(from.file()-1,from.rank()-1); //down left
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file(),from.rank()-1); //down
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()-1); //down right
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()-1,from.rank()); //left
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()); //right
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()-1,from.rank()+1); //up left
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file(),from.rank()+1); //up
+    checkSameColorCaptureAndSet(from,squareTo,moves,color);
+    squareTo = Square::fromCoordinates(from.file()+1,from.rank()+1); //up right
     checkSameColorCaptureAndSet(from,squareTo,moves,color);
 }
 
