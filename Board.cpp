@@ -60,6 +60,9 @@ void Board::pseudoLegalMovesFrom(const Square& from,
             if (pieceFrom.type()==PieceType::King){
                 pseudoLegalKingMoves(from,moves,pieceFrom.color());
             }
+            if (pieceFrom.type()==PieceType::Bishop){
+                pseudoLegalBishopMoves(from,moves,pieceFrom.color());
+            }
         }
     }
 
@@ -105,6 +108,39 @@ void Board::pseudoLegalKingMoves(const Square& from,
     checkSameColorCaptureAndSet(from,squareTo,moves,color);
 }
 
+void Board::pseudoLegalBishopMoves(const Square& from,
+                                 Board::MoveVec& moves, PieceColor color) const {
+    Square::Optional squareTo;
+    int i = 1;
+    bool noCapture=true;
+    while(i<8 && noCapture){
+        squareTo = Square::fromCoordinates(from.file()-i,from.rank()-i); //down left
+        noCapture = checkCaptureAndSet(from,squareTo,moves,color);
+        i++;
+    }
+    i=1;
+    noCapture=true;
+    while(i<8 && noCapture){
+        squareTo = Square::fromCoordinates(from.file()+i,from.rank()-i); //down right
+        noCapture = checkCaptureAndSet(from,squareTo,moves,color);
+        i++;
+    }
+    i=1;
+    noCapture=true;
+    while(i<8 && noCapture){
+        squareTo = Square::fromCoordinates(from.file()-i,from.rank()+i); //up left
+        noCapture = checkCaptureAndSet(from,squareTo,moves,color);
+        i++;
+    }
+    i=1;
+    noCapture=true;
+    while(i<8 && noCapture){
+        squareTo = Square::fromCoordinates(from.file()+i,from.rank()+i); //up right
+        noCapture = checkCaptureAndSet(from,squareTo,moves,color);
+        i++;
+    }
+}
+
 void Board::checkSameColorCaptureAndSet(const Square& from, Square::Optional squareTo,
                                  Board::MoveVec& moves, PieceColor color) const {
     if (squareTo){
@@ -115,8 +151,25 @@ void Board::checkSameColorCaptureAndSet(const Square& from, Square::Optional squ
         }
         moves.push_back(* new Move(from,squareTo.value()));
     }
-
 }
+
+bool Board::checkCaptureAndSet(const Square& from, Square::Optional squareTo,
+                                 Board::MoveVec& moves, PieceColor color) const {
+    if (squareTo){
+        if (piece(squareTo.value())){
+            if (piece(squareTo.value()).value().color() == color){
+                return false;
+            } else{
+                moves.push_back(* new Move(from,squareTo.value()));
+                return false;
+            }
+        }
+        moves.push_back(* new Move(from,squareTo.value()));
+        return true;
+    }
+    return false;
+}
+
 
 std::ostream& operator<<(std::ostream& os, const Board& board) {
     (void)board;
