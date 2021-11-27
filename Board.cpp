@@ -36,11 +36,11 @@ CastlingRights Board::castlingRights() const {
 }
 
 void Board::setEnPassantSquare(const Square::Optional& square) {
-    (void)square;
+    enPassantSquareAttr = square;
 }
 
 Square::Optional Board::enPassantSquare() const {
-    return std::nullopt;
+    return enPassantSquareAttr;
 }
 
 void Board::makeMove(const Move& move) {
@@ -48,7 +48,10 @@ void Board::makeMove(const Move& move) {
 }
 
 void Board::pseudoLegalMoves(MoveVec& moves) const {
-    (void)moves;
+    for (int i =0; i<=63;i++){
+        Square fromSqr = Square::fromIndex(i).value();
+        pseudoLegalMovesFrom(fromSqr,moves);
+    }
 }
 
 void Board::pseudoLegalMovesFrom(const Square& from,
@@ -77,7 +80,6 @@ void Board::pseudoLegalMovesFrom(const Square& from,
             }
         }
     }
-
 }
 
 void Board::pseudoLegalKnightMoves(const Square& from,
@@ -199,11 +201,26 @@ void Board::pseudoLegalPawnMoves(const Square& from,
         checkOtherColorCaptureAndSet(from,squareTo,moves, color);
         squareTo = Square::fromCoordinates(from.file()+1,from.rank()+1); //up right
         checkOtherColorCaptureAndSet(from,squareTo,moves, color);
+        //base step
         if (from.rank()==1){
-            //base step
             squareTo = Square::fromCoordinates(from.file(),from.rank()+2); //up up
             Square squareToIntermediate=Square::fromCoordinates(from.file(),from.rank()+1).value(); //up
             checkFreeBaseAndSet(from,squareToIntermediate,squareTo.value(),moves);
+        }
+        // en Passant
+        Square::Optional enPssntSqOpt = enPassantSquare();
+        if (enPssntSqOpt){
+            Square enPssntSq=enPssntSqOpt.value();
+            if (enPssntSq.rank()==from.rank()+1){
+                if (enPssntSq.file() == from.file() -1){
+                    squareTo = Square::fromCoordinates(from.file()-1,from.rank()+1);
+                    checkBlockedAndSet(from,squareTo,moves);
+                }
+                if (enPssntSq.file() == from.file() +1){
+                    squareTo = Square::fromCoordinates(from.file()+1,from.rank()+1);
+                    checkBlockedAndSet(from,squareTo,moves);
+                }
+            }
         }
     } else{
         // normal step
@@ -214,11 +231,26 @@ void Board::pseudoLegalPawnMoves(const Square& from,
         checkOtherColorCaptureAndSet(from,squareTo,moves, color);
         squareTo = Square::fromCoordinates(from.file()+1,from.rank()-1); //down right
         checkOtherColorCaptureAndSet(from,squareTo,moves, color);
+        //base step
         if (from.rank()==6){
-            //base step
             squareTo = Square::fromCoordinates(from.file(),from.rank()-2); //down down
             Square squareToIntermediate=Square::fromCoordinates(from.file(),from.rank()-1).value(); //down
             checkFreeBaseAndSet(from,squareToIntermediate,squareTo.value(),moves);
+        }
+        // en Passant
+        Square::Optional enPssntSqOpt = enPassantSquare();
+        if (enPssntSqOpt){
+            Square enPssntSq=enPssntSqOpt.value();
+            if (enPssntSq.rank()==from.rank()-1){
+                if (enPssntSq.file() == from.file() -1){
+                    squareTo = Square::fromCoordinates(from.file()-1,from.rank()-1);
+                    checkBlockedAndSet(from,squareTo,moves);
+                }
+                if (enPssntSq.file() == from.file() +1){
+                    squareTo = Square::fromCoordinates(from.file()+1,from.rank()-1);
+                    checkBlockedAndSet(from,squareTo,moves);
+                }
+            }
         }
     }
 }
